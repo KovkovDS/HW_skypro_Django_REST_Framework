@@ -1,6 +1,6 @@
 from rest_framework import generics
-from users.models import User
-from users.serializer import ProfileSerializer
+from users.models import User, Payments
+from users.serializer import ProfileSerializer, PaymentSerializer
 
 
 class ProfilesListAPIView(generics.ListAPIView):
@@ -25,3 +25,25 @@ class ProfileUpdateAPIView(generics.UpdateAPIView):
 class ProfileDestroyAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
 
+
+class PaymentsListAPIView(generics.ListAPIView):
+    serializer_class = PaymentSerializer
+    queryset = Payments.objects.all()
+
+
+class PaymentRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = PaymentSerializer
+    queryset = Payments.objects.all()
+
+
+class PaymentCreateAPIView(generics.CreateAPIView):
+    serializer_class = PaymentSerializer
+
+
+class PaymentUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = PaymentSerializer
+    queryset = Payments.objects.all()
+
+
+class PaymentDestroyAPIView(generics.DestroyAPIView):
+    queryset = Payments.objects.all()

@@ -3,6 +3,8 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from lms.models import Course, Lesson
+
 
 class CustomUserManager(BaseUserManager):
 
@@ -46,3 +48,28 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        ordering = ['email', 'phone_number', 'updated_at']
+
+
+class Payments(models.Model):
+    PAYMENT_METHOD_CHOICES = [('CASH', 'Наличные',), ('TRANSFER', 'Перевод на счет',)]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    create_at = models.DateField(auto_now_add=True, verbose_name='Дата оплаты')
+    paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True,
+                                    verbose_name='Оплаченный курс')
+    paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True,
+                                    verbose_name='Оплаченный урок')
+    payment_amount = models.DecimalField(decimal_places=2, max_digits=9, verbose_name='Сумма оплаты')
+    payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD_CHOICES, verbose_name='Способ оплаты')
+
+    def __str__(self):
+        return f'{self.user} = {self.payment_amount} ({self.payment_method})'
+
+    class Meta:
+        verbose_name = 'Платеж'
+        verbose_name_plural = 'Платежи'
+        ordering = ['create_at', 'user', 'payment_amount', 'paid_course', 'paid_lesson', 'payment_method']
