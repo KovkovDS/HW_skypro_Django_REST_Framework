@@ -10,11 +10,11 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    payment_history = PaymentSerializer(source='payments_set', many=True)
+    payment_history = PaymentSerializer(source='payments_set', many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['email', 'avatar', 'phone_number', 'city']
 
 
 
