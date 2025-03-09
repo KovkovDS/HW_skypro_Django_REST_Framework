@@ -10,5 +10,5 @@ class Command(BaseCommand):
         Course.objects.all().delete()
         Lesson.objects.all().delete()
 
-        call_command('loaddata', 'courses_and_lessons_fixture.json')
+        call_command('loaddata', 'lms/fixtures/courses_and_lessons_fixture.json')
         self.stdout.write(self.style.SUCCESS('Successfully loaded data from fixture'))
