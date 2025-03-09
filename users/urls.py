@@ -1,4 +1,6 @@
 from django.urls import path
+from rest_framework.permissions import AllowAny
+
 from users.apps import UsersConfig
 from users.views import ProfilesListAPIView, ProfileRetrieveAPIView, ProfileCreateAPIView, \
     ProfileUpdateAPIView, ProfileDestroyAPIView, PaymentsListAPIView, PaymentRetrieveAPIView, PaymentCreateAPIView, \
@@ -12,7 +14,7 @@ app_name = UsersConfig.name
 urlpatterns = [
     path('profiles/', ProfilesListAPIView.as_view(), name='profiles'),
     path('profile/<int:pk>/', ProfileRetrieveAPIView.as_view(), name='profile'),
-    path('profile/new/', ProfileCreateAPIView.as_view(), name='adding_profile'),
+    path('registration/', ProfileCreateAPIView.as_view(), name='registration'),
     path('profile/<int:pk>/update/', ProfileUpdateAPIView.as_view(), name='update_profile'),
     path('profile/<int:pk>/delete/', ProfileDestroyAPIView.as_view(), name='delete_profile'),
     path('payments/', PaymentsListAPIView.as_view(), name='payments'),
@@ -20,6 +22,6 @@ urlpatterns = [
     path('payment/pay/', PaymentCreateAPIView.as_view(), name='adding_payment'),
     path('payment/<int:pk>/adjust/', PaymentUpdateAPIView.as_view(), name='update_payment'),
     path('payment/<int:pk>/cancel/', PaymentDestroyAPIView.as_view(), name='delete_payment'),
-    path('', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('authorization/', TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name='authorization'),
+    path('refresh/', TokenRefreshView.as_view(permission_classes=(AllowAny,)), name='token_refresh'),
     ]
