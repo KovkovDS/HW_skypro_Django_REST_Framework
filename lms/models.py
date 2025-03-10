@@ -1,6 +1,8 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
+from HW_skypro_Django_REST_Framework import settings
+
 
 class Course(models.Model):
     title = models.CharField(max_length=100, verbose_name='Название курса')
@@ -11,6 +13,8 @@ class Course(models.Model):
                                                    'Разрешенные расширения: %(allowed_extensions)s .',
                                                    'Недопустимое расширение!')]))
     description = models.TextField(null=True, blank=True, verbose_name='Описание курса')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
+                              verbose_name='Владелец')
 
     def __str__(self):
         return f'\n\nНазвание курса: {self.title}. \nОписание курса: {self.description}.'
@@ -18,7 +22,7 @@ class Course(models.Model):
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
-        ordering = ['title']
+        ordering = ['id', 'owner', 'title']
 
 
 class Lesson(models.Model):
@@ -32,6 +36,8 @@ class Lesson(models.Model):
                                                    'Недопустимое расширение!')]))
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
     link_to_video = models.CharField(max_length=150, verbose_name='Ссылка на видео урока')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
+                              verbose_name='Владелец')
 
     def __str__(self):
         return f'\n\nНазвание урока: {self.title}. \nОписание урока: {self.description}. \nКурс: ' \
@@ -40,4 +46,4 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'Урок'
         verbose_name_plural = 'Уроки'
-        ordering = ['title']
+        ordering = ['id', 'owner', 'course', 'title']
