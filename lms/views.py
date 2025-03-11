@@ -11,12 +11,12 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create']:
-            self.permission_classes = (~IsModerator,)
+            self.permission_classes = [IsAuthenticated & ~IsModerator]
         elif self.action in ['list', 'change', 'retrieve']:
-            self.permission_classes = (IsModerator | IsOwner,)
+            self.permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
         elif self.action in ['destroy']:
-            self.permission_classes = (~IsModerator | IsOwner,)
-        return super().get_permissions()
+            self.permission_classes = [IsAuthenticated & ~IsModerator & IsOwner]
+        return [permission() for permission in self.permission_classes]
 
     def perform_create(self, serializer):
         new_lesson = serializer.save()
@@ -27,13 +27,13 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonsListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = (IsAuthenticated, IsModerator | IsOwner)
+    permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = (IsAuthenticated, IsModerator | IsOwner)
+    permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -48,9 +48,9 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = (IsAuthenticated, IsModerator | IsOwner)
+    permission_classes = (IsAuthenticated & IsModerator | IsOwner)
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
-    permission_classes = (IsAuthenticated, ~IsModerator | IsOwner)
+    permission_classes = (IsAuthenticated & ~IsModerator & IsOwner)
