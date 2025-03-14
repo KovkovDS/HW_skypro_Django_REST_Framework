@@ -34,7 +34,7 @@ class Lesson(models.Model):
                                                    'Расширение файла « %(extension)s » не допускается. '
                                                    'Разрешенные расширения: %(allowed_extensions)s .',
                                                    'Недопустимое расширение!')]))
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс', related_name='lessons')
     link_to_video = models.CharField(max_length=150, verbose_name='Ссылка на видео урока')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
                               verbose_name='Владелец')
