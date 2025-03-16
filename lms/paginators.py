@@ -10,5 +10,4 @@ class LessonsPaginator(PageNumberPagination):
 class CoursesPaginator(PageNumberPagination):
     page_size = 4
     page_size_query_param = 'page_size'
-    max_page_size = 10
-
+    max_page_size = 8
