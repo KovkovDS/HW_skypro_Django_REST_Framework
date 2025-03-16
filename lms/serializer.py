@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from lms.models import Course, Lesson
 from lms.validators import LinkOnVideoValidator
+from users.models import SubscriptionForCourse, User
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -13,8 +14,10 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    count_lessons = serializers.SerializerMethodField()
-    lesson_information = LessonSerializer(source='lesson_set', many=True, read_only=True)
+    count_lessons = serializers.SerializerMethodField(read_only=True)
+    lesson_information = LessonSerializer(source='lessons', many=True, read_only=True)
+    subscription = serializers.SerializerMethodField(read_only=True)
+    count_subscriptions = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Course
@@ -23,4 +26,12 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_count_lessons(self, instance):
         return Lesson.objects.filter(course=instance).count()
+
+    def get_count_subscriptions(self, instance):
+        return f'Подписок - {SubscriptionForCourse.objects.filter(course=instance).count()}.'
+
+    def get_subscription(self, instance):
+        user = self.context['request'].user
+        SubscriptionForCourse.objects.all().filter(user=user, course=instance).exists()
+        return f'У Вас есть подписка на данный курс.'
 

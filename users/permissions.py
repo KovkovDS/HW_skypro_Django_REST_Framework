@@ -15,12 +15,12 @@ class IsOwner(BasePermission):
         return False
 
 
-# class IsUser(BasePermission):
-#
-#     def has_object_permission(self, request, view, obj):
-#         if request.user.has_perm('IsAuthenticated'):
-#             view in ['create']
-#         return False
+class IsUserOwner(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if request.user == obj:
+            return True
+        return False
 
 
 class IsAdministrator(BasePermission):

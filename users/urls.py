@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from users.apps import UsersConfig
 from users.views import ProfilesListAPIView, ProfileRetrieveAPIView, ProfileCreateAPIView, \
     ProfileUpdateAPIView, ProfileDestroyAPIView, PaymentsListAPIView, PaymentRetrieveAPIView, PaymentCreateAPIView, \
-    PaymentUpdateAPIView, PaymentDestroyAPIView
+    PaymentUpdateAPIView, PaymentDestroyAPIView, SubscriptionForCourseView
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 
@@ -24,4 +24,5 @@ urlpatterns = [
     path('payment/<int:pk>/cancel/', PaymentDestroyAPIView.as_view(), name='delete_payment'),
     path('authorization/', TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name='authorization'),
     path('refresh/', TokenRefreshView.as_view(permission_classes=(AllowAny,)), name='token_refresh'),
+    path('subscription/', SubscriptionForCourseView.as_view(), name='subscription'),
     ]
