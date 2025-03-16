@@ -2,7 +2,6 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
 from lms.models import Course, Lesson
 
 
@@ -57,8 +56,8 @@ class User(AbstractUser):
 
 class Payments(models.Model):
     PAYMENT_METHOD_CHOICES = [('CASH', 'Наличные',), ('TRANSFER', 'Перевод на счет',)]
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    create_at = models.DateField(auto_now_add=True, verbose_name='Дата оплаты')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата оплаты')
     paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True,
                                     verbose_name='Оплаченный курс')
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True,
@@ -67,9 +66,23 @@ class Payments(models.Model):
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD_CHOICES, verbose_name='Способ оплаты')
 
     def __str__(self):
-        return f'{self.user} = {self.payment_amount} ({self.payment_method})'
+        return f'{self.owner} = {self.payment_amount} ({self.payment_method})'
 
     class Meta:
         verbose_name = 'Платеж'
         verbose_name_plural = 'Платежи'
-        ordering = ['create_at', 'user', 'payment_amount', 'paid_course', 'paid_lesson', 'payment_method']
+        ordering = ['created_at', 'owner', 'payment_amount', 'paid_course', 'paid_lesson', 'payment_method']
+
+
+class SubscriptionForCourse(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Подписка на курс')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала подписки')
+
+    def __str__(self):
+        return f'{self.owner}: {self.course} {self.course.title}'
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        ordering = ['created_at', 'owner', 'course']

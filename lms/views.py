@@ -23,11 +23,28 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_lesson.owner = self.request.user
         new_lesson.save()
 
+    def get_queryset(self):
+
+        if self.permission_classes != (IsModerator | IsOwner,):
+            return Course.objects.none()
+
+        if self.request.user.groups.filter(name="Модератор").exists():
+            return Course.objects.all()
+        return Course.objects.filter(owner=self.request.user)
+
 
 class LessonsListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
+    # permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
+
+    def get_queryset(self):
+
+        if self.permission_classes != [IsModerator | IsOwner]:
+            return Lesson.objects.none()
+        if self.request.user.groups.filter(name="Модератор").exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=self.request.user)
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):

@@ -15,14 +15,16 @@ class Course(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name='Описание курса')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
                               verbose_name='Владелец')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
     def __str__(self):
-        return f'\n\nНазвание курса: {self.title}. \nОписание курса: {self.description}.'
+        return f'Название курса: {self.title}. Описание курса: {self.description}.'
 
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
-        ordering = ['id', 'owner', 'title']
+        ordering = ['id', 'updated_at', 'owner', 'title']
 
 
 class Lesson(models.Model):
@@ -38,12 +40,14 @@ class Lesson(models.Model):
     link_to_video = models.CharField(max_length=150, verbose_name='Ссылка на видео урока')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True,
                               verbose_name='Владелец')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
     def __str__(self):
-        return f'\n\nНазвание урока: {self.title}. \nОписание урока: {self.description}. \nКурс: ' \
-               f'{self.course.title}. \nСсылка на видео урока: {self.link_to_video}.'
+        return f'Название урока: {self.title}. Описание урока: {self.description}. Курс: ' \
+               f'{self.course.title}. Ссылка на видео урока: {self.link_to_video}.'
 
     class Meta:
         verbose_name = 'Урок'
         verbose_name_plural = 'Уроки'
-        ordering = ['id', 'owner', 'course', 'title']
+        ordering = ['id', 'updated_at', 'owner', 'course', 'title']

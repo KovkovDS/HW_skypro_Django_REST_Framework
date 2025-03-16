@@ -1,11 +1,16 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from users.models import User, Payments
-from users.permissions import IsOwner, IsAdministrator
-from users.serializer import ProfileSerializer, PaymentSerializer, ProfileUserSerializer
+
+from lms.models import Course
+from users.models import User, Payments, SubscriptionForCourse
+from users.permissions import IsOwner, IsAdministrator, IsUserOwner
+from users.serializer import ProfileSerializer, PaymentSerializer, ProfileUserSerializer, \
+    SubscriptionForCourseSerializer
 
 
 class ProfilesListAPIView(generics.ListAPIView):
@@ -17,14 +22,12 @@ class ProfileRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = ProfileUserSerializer
     queryset = User.objects.all()
 
-    def get_serializer_class(self, pk=None):
-        queryset = User.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        if self.request.user == user or self.request.user.get_user_permissions('IsAdministrator'):
-            serializer_class = ProfileUserSerializer(user)
-        else:
-            serializer_class = ProfileSerializer(user)
-        return serializer_class
+    def get_serializer_class(self):
+        if self.request.method == 'GET' and self.get_object() != self.request.user or self.request.user.is_superuser is False:
+            return ProfileSerializer
+        if self.request.user.is_superuser:
+            return ProfileUserSerializer
+        return ProfileUserSerializer
 
 
 class ProfileCreateAPIView(generics.CreateAPIView):
@@ -40,12 +43,12 @@ class ProfileCreateAPIView(generics.CreateAPIView):
 class ProfileUpdateAPIView(generics.UpdateAPIView):
     serializer_class = ProfileUserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated & IsOwner | IsAdministrator]
+    permission_classes = [IsAuthenticated & IsUserOwner | IsAuthenticated & IsAdministrator]
 
 
 class ProfileDestroyAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated & IsOwner | IsAdministrator]
+    permission_classes = [IsAuthenticated & IsUserOwner | IsAuthenticated & IsAdministrator]
 
 
 class PaymentsListAPIView(generics.ListAPIView):
@@ -76,3 +79,24 @@ class PaymentUpdateAPIView(generics.UpdateAPIView):
 class PaymentDestroyAPIView(generics.DestroyAPIView):
     queryset = Payments.objects.all()
     permission_classes = [IsAuthenticated & IsAdministrator]
+
+
+class SubscriptionForCourseView(APIView):
+    queryset = SubscriptionForCourse.objects.all()
+    serializer_class = SubscriptionForCourseSerializer
+    permission_classes = [IsAuthenticated & IsAdministrator | IsAuthenticated & IsOwner]
+
+    def post(self, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get('course')
+        course_item = get_object_or_404(Course, pk=course_id)
+
+        subs_item = SubscriptionForCourse.objects.all().filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'подписка удалена'
+        else:
+            SubscriptionForCourse.objects.create(user=user, course=course_item)
+            message = 'подписка добавлена'
+        return Response({"message": message})
