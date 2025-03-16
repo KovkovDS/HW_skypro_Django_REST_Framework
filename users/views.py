@@ -91,12 +91,12 @@ class SubscriptionForCourseView(APIView):
         course_id = self.request.data.get('course')
         course_item = get_object_or_404(Course, pk=course_id)
 
-        subs_item = SubscriptionForCourse.objects.all().filter(user=user, course=course_item)
+        subs_item = SubscriptionForCourse.objects.all().filter(owner=user, course=course_item)
 
         if subs_item.exists():
             subs_item.delete()
-            message = 'подписка удалена'
+            message = 'Подписка удалена.'
         else:
-            SubscriptionForCourse.objects.create(user=user, course=course_item)
-            message = 'подписка добавлена'
+            SubscriptionForCourse.objects.create(owner=user, course=course_item)
+            message = 'Подписка добавлена.'
         return Response({"message": message})
