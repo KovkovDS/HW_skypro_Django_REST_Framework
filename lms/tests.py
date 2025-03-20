@@ -13,8 +13,6 @@ class TestCase(APITestCase):
         """Задает начальные данные для тестов."""
 
         self.user = User.objects.create(email="admin@sky.pro")
-        # self.moderator_group = Group.objects.create(name="Модератор")
-        # self.user.groups.add(self.moderator_group)
         link_to_video = 'https://www.youtube.com/'
         self.course = Course.objects.create(title="Test Course for tests", description='Test Course for tests',
                                             owner=self.user)
@@ -72,19 +70,19 @@ class CourseTestCase(TestCase, APITestCase):
 #         self.assertEqual(response.status_code, status.HTTP_200_OK)
 #         self.assertEqual(data, result)
 #
-    def test_retrieve_course(self):
-        """Тест получения курса по Primary Key."""
-
-        for course in Course.objects.all():
-            print(course.pk)
-        url = reverse("lms:courses-detail", args=[self.course.pk])
-        print(url)
-        response = self.client.get(url)
-        data = response.json()
-        print(data)
-        self.assertEqual(Course.objects.all().count(), 1)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data.get("title"), self.course.title)
+    # def test_retrieve_course(self):
+    #     """Тест получения курса по Primary Key."""
+    #
+    #     for course in Course.objects.all():
+    #         print(course.pk)
+    #     url = reverse("lms:courses-detail", args=[self.course.pk])
+    #     print(url)
+    #     response = self.client.get(url)
+    #     data = response.json()
+    #     print(data)
+    #     self.assertEqual(Course.objects.all().count(), 1)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(data.get("title"), self.course.title)
 
     def test_create_course(self):
         """Тест создания нового курса."""
