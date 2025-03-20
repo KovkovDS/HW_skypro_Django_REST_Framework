@@ -15,7 +15,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         if self.action in ['create']:
             self.permission_classes = [IsAuthenticated & ~IsModerator]
         elif self.action in ['list', 'change', 'retrieve']:
-            self.permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
+            self.permission_classes = [IsAuthenticated & IsOwner]
         elif self.action in ['destroy']:
             self.permission_classes = [IsAuthenticated & IsOwner]
         return [permission() for permission in self.permission_classes]
@@ -39,11 +39,12 @@ class LessonsListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     pagination_class = LessonsPaginator
+    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
     def get_queryset(self):
 
-        if self.permission_classes != [IsModerator | IsOwner]:
-            return Lesson.objects.none()
+        # if self.permission_classes != [IsAuthenticated, IsModerator | IsOwner]:
+        #     return Lesson.objects.none()
         if self.request.user.groups.filter(name="Модератор").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=self.request.user)
