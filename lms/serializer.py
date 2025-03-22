@@ -9,7 +9,6 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
-        # depth = 1
         validators = [LinkOnVideoValidator(field='link_to_video')]
 
 
@@ -22,7 +21,6 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
-        # depth = 1
 
     def get_count_lessons(self, instance):
         return Lesson.objects.filter(course=instance).count()

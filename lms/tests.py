@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from rest_framework.fields import DateTimeField
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -32,11 +33,6 @@ class CourseTestCase(TestCase, APITestCase):
         url = reverse("lms:courses-list")
         response = self.client.get(url)
         data = response.json()
-        print(data)
-        # created_text = str(self.course.created_at)
-        # created = created_text[0:10] + 'T' + created_text[11:26] + 'Z'
-        # updated_text = str(self.course.updated_at)
-        # updated = updated_text[0:10] + 'T' + updated_text[11:26] + 'Z'
 
         result = {
             'count': 1,
