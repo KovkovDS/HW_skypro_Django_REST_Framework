@@ -69,7 +69,7 @@ class Payments(models.Model):
     """Класс модели "Платеж"."""
 
     PAYMENT_METHOD_CHOICES = [('CASH', 'Наличные',), ('TRANSFER', 'Перевод на счет',)]
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Пользователь')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата оплаты')
     paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True,
                                     verbose_name='Оплаченный курс')
@@ -77,6 +77,8 @@ class Payments(models.Model):
                                     verbose_name='Оплаченный урок')
     payment_amount = models.DecimalField(decimal_places=2, max_digits=9, verbose_name='Сумма оплаты')
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD_CHOICES, verbose_name='Способ оплаты')
+    session_id = models.CharField(max_length=255, null=True, blank=True, verbose_name="ID сессии")
+    payment_link = models.URLField(max_length=400, null=True, blank=True, verbose_name="Ссылка на оплату")
 
     def __str__(self):
         """Метод для описания человеко читаемого вида модели "Платеж"."""
