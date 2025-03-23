@@ -1,7 +1,6 @@
 from HW_skypro_Django_REST_Framework import settings
 import stripe
 
-
 stripe.api_key = settings.STRIPE_API_KEY
 
 
@@ -43,3 +42,9 @@ def create_stripe_session(price):
     return session.get("id"), session.get("url")
 
 
+def checkout_stripe_session(session_id):
+    """Функция проверки статуса сессии платежа в Stripe."""
+
+    checkout_session_id = stripe.checkout.Session.retrieve(session_id)
+    if session_id in checkout_session_id.get('url'):
+        return True

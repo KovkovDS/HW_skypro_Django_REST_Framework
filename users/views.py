@@ -12,7 +12,7 @@ from users.models import User, Payments, SubscriptionForCourse
 from users.permissions import IsOwner, IsAdministrator, IsUserOwner
 from users.serializer import ProfileSerializer, PaymentSerializer, ProfileUserSerializer, \
     SubscriptionForCourseSerializer
-from users.services import create_stripe_product, create_stripe_price, create_stripe_session
+from users.services import create_stripe_product, create_stripe_price, create_stripe_session, checkout_stripe_session
 
 
 class ProfilesListAPIView(generics.ListAPIView):
@@ -101,7 +101,8 @@ class PaymentCreateAPIView(generics.CreateAPIView):
         session_id, session_url = create_stripe_session(stripe_price)
         payment.session_id = session_id
         payment.payment_link = session_url
-        payment.save()
+        if checkout_stripe_session(payment.session_id):
+            payment.save()
 
 
 class PaymentUpdateAPIView(generics.UpdateAPIView):
