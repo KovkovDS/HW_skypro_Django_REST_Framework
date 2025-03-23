@@ -8,7 +8,6 @@ def create_stripe_product(payment):
     """Функция создания продукта в Stripe."""
 
     stripe_products_list = stripe.Product.list()
-    print(stripe_products_list)
     for product in stripe_products_list:
         if payment.paid_course.title != product.name and payment.paid_lesson is None:
             paid_product = payment.paid_course.title
