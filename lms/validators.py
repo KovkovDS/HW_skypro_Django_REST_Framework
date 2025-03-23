@@ -3,12 +3,16 @@ from rest_framework.exceptions import ValidationError
 
 
 class LinkOnVideoValidator:
+    """Класс валидатора поля ссылки на видео у объекта модели "Урок"."""
 
     def __init__(self, field):
+        """Метод для инициализации объекта класса."""
+
         self.field = field
 
     def __call__(self, value):
-        print(value)
+        """Метод для получения и проверки указанных данных поля ссылки на видео у объекта модели "Урок"."""
+
         reg = re.compile('^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*$')
         tmp_val = dict(value).get(self.field)
         if not value or value is None or not bool(reg.match(tmp_val)):
