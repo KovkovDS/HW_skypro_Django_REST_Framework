@@ -125,6 +125,8 @@ class PaymentsTestCase(TestCase, APITestCase):
                 "created_at": res_created_at(self.payment.created_at),
                 "payment_amount": res_payment_amount(self.payment.payment_amount),
                 "payment_method": self.payment.payment_method,
+                'session_id': None,
+                'payment_link': None,
                 "owner": self.user.pk,
                 "paid_course": self.course.pk,
                 "paid_lesson": self.lesson.pk,

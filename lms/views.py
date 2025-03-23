@@ -45,7 +45,7 @@ class LessonsListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     pagination_class = LessonsPaginator
-    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
+    permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
 
     def get_queryset(self):
         """Метод для изменения запроса к базе данных по объектам модели "Курса"."""

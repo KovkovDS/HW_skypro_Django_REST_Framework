@@ -1,4 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
@@ -10,6 +12,7 @@ from users.models import User, Payments, SubscriptionForCourse
 from users.permissions import IsOwner, IsAdministrator, IsUserOwner
 from users.serializer import ProfileSerializer, PaymentSerializer, ProfileUserSerializer, \
     SubscriptionForCourseSerializer
+from users.services import create_stripe_product, create_stripe_price, create_stripe_session
 
 
 class ProfilesListAPIView(generics.ListAPIView):
@@ -28,7 +31,8 @@ class ProfileRetrieveAPIView(generics.RetrieveAPIView):
     def get_serializer_class(self):
         """Метод получения сериализатора в соответствии с запросом."""
 
-        if self.request.method == 'GET' and self.get_object() != self.request.user or self.request.user.is_superuser is False:
+        if self.request.method == 'GET' and self.get_object() != self.request.user or \
+                self.request.user.is_superuser is False:
             return ProfileSerializer
         if self.request.user.is_superuser:
             return ProfileUserSerializer
@@ -88,6 +92,17 @@ class PaymentCreateAPIView(generics.CreateAPIView):
 
     serializer_class = PaymentSerializer
 
+    def perform_create(self, serializer):
+        """Метод вносит изменение в сериализатор создания "Платежа"."""
+
+        payment = serializer.save(owner=self.request.user)
+        stripe_product_id = create_stripe_product(payment)
+        stripe_price = create_stripe_price(payment, stripe_product_id)
+        session_id, session_url = create_stripe_session(stripe_price)
+        payment.session_id = session_id
+        payment.payment_link = session_url
+        payment.save()
+
 
 class PaymentUpdateAPIView(generics.UpdateAPIView):
     """Класс представления вида Generic для эндпоинта изменения оплаты от пользователя."""
@@ -112,6 +127,13 @@ class SubscriptionForCourseView(APIView):
     serializer_class = SubscriptionForCourseSerializer
     permission_classes = [IsAuthenticated & IsAdministrator | IsAuthenticated & IsOwner]
 
+    @swagger_auto_schema(request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['course'],
+        properties={
+            'course': openapi.Schema(type=openapi.TYPE_INTEGER)
+        },
+    ))
     def post(self, *args, **kwargs):
         """Метод для отправки запроса на создание или
             удаление подписки пользователя на курс."""
