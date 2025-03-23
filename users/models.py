@@ -6,8 +6,11 @@ from lms.models import Course, Lesson
 
 
 class CustomUserManager(BaseUserManager):
+    """Класс менеджера для создания объектов модели "Пользователь"."""
 
     def create_user(self, email, password=None, **extra_fields):
+        """Метод создания объекта "пользователь" модели "Пользователь"."""
+
         if not email:
             raise ValueError("Адрес электронной почты должен быть указан")
         email = self.normalize_email(email)
@@ -17,6 +20,8 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
+        """Метод создания объекта "суперпользователь" модели "Пользователь"."""
+
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         if extra_fields.get("is_staff") is not True:
@@ -27,6 +32,8 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    """Класс модели "Пользователь"."""
+
     email = models.EmailField(unique=True, verbose_name='Адрес электронной почты')
     avatar = models.ImageField(upload_to='users/images', null=True, blank=True, verbose_name='Аватар профиля',
                                validators=[FileExtensionValidator(['jpg', 'png'],
@@ -46,15 +53,21 @@ class User(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
+        """Метод для описания человеко читаемого вида модели "Пользователь"."""
+
         return self.email
 
     class Meta:
+        """Класс для изменения поведения полей модели "Пользователь"."""
+
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         ordering = ['email', 'phone_number', 'updated_at']
 
 
 class Payments(models.Model):
+    """Класс модели "Платеж"."""
+
     PAYMENT_METHOD_CHOICES = [('CASH', 'Наличные',), ('TRANSFER', 'Перевод на счет',)]
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата оплаты')
@@ -66,23 +79,33 @@ class Payments(models.Model):
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD_CHOICES, verbose_name='Способ оплаты')
 
     def __str__(self):
+        """Метод для описания человеко читаемого вида модели "Платеж"."""
+
         return f'{self.owner} = {self.payment_amount} ({self.payment_method})'
 
     class Meta:
+        """Класс для изменения поведения полей модели "Платеж"."""
+
         verbose_name = 'Платеж'
         verbose_name_plural = 'Платежи'
         ordering = ['created_at', 'owner', 'payment_amount', 'paid_course', 'paid_lesson', 'payment_method']
 
 
 class SubscriptionForCourse(models.Model):
+    """Класс модели "Подписка"."""
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Подписка на курс')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала подписки')
 
     def __str__(self):
+        """Метод для описания человеко читаемого вида модели "Подписка"."""
+
         return f'{self.owner}: {self.course} {self.course.title}'
 
     class Meta:
+        """Класс для изменения поведения полей модели "Подписка"."""
+
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         ordering = ['created_at', 'owner', 'course']

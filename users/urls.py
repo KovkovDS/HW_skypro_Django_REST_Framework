@@ -1,6 +1,5 @@
 from django.urls import path
 from rest_framework.permissions import AllowAny
-
 from users.apps import UsersConfig
 from users.views import ProfilesListAPIView, ProfileRetrieveAPIView, ProfileCreateAPIView, \
     ProfileUpdateAPIView, ProfileDestroyAPIView, PaymentsListAPIView, PaymentRetrieveAPIView, PaymentCreateAPIView, \
@@ -9,7 +8,6 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 
 
 app_name = UsersConfig.name
-
 
 urlpatterns = [
     path('profiles/', ProfilesListAPIView.as_view(), name='profiles'),
