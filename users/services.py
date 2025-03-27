@@ -1,6 +1,7 @@
 from HW_skypro_Django_REST_Framework import settings
 import stripe
 
+
 stripe.api_key = settings.STRIPE_API_KEY
 
 
