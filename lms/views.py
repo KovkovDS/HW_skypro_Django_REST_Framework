@@ -1,4 +1,6 @@
-from users.tasks import send_course_update_message
+from datetime import timedelta
+from django.utils import timezone
+from users.tasks import send_course_update_message, send_course_update_for_update_lesson_message
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from lms.models import Course, Lesson
@@ -33,10 +35,16 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_lesson.save()
 
     def perform_update(self, serializer):
-        """Проверка наличия изменений"""
+        """Метод вносит изменение в сериализатор редактирования "Курса"."""
 
         course = serializer.save()
-        send_course_update_message.delay(course.pk)
+        if course.updated_at:
+            time_difference = timezone.now() - course.updated_at
+            if time_difference > timedelta(hours=4):
+                send_course_update_message.delay(course)
+        else:
+            send_course_update_message.delay(course)
+        course.updated_at = timezone.now()
         course.save()
 
     def get_queryset(self):
@@ -90,6 +98,29 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated & IsModerator | IsAuthenticated & IsOwner]
+
+    def perform_update(self, serializer):
+        """Метод вносит изменение в сериализатор редактирования "Урока"."""
+
+        lesson = serializer.save()
+        courses = Course.objects.filter(pk=lesson.course.pk)
+        # course_serializer = CourseSerializer()
+        for course in courses:
+            if lesson.updated_at:
+                time_difference = timezone.now() - lesson.updated_at
+                if time_difference > timedelta(hours=4):
+                    send_course_update_message.delay(course.pk)
+                    # send_course_update_for_update_lesson_message.delay(lesson.pk)
+                    # lesson.updated_at = timezone.now()
+                    # course.updated_at = timezone.now()
+            else:
+                send_course_update_message.delay(course.pk)
+        # send_course_update_for_update_lesson_message.delay(lesson.pk)
+        lesson.updated_at = timezone.now()
+        courses.updated_at = timezone.now()
+        lesson.save()
+        # course_serializer.is_valid(data=course)
+        # course_serializer.save()
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):

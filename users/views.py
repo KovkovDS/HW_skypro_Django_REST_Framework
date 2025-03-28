@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from lms.models import Course
 from users.models import User, Payments, SubscriptionForCourse
 from users.permissions import IsOwner, IsAdministrator, IsUserOwner
-from users.serializer import ProfileSerializer, PaymentSerializer, ProfileUserSerializer, \
+from users.serializer import ProfileSerializer, CreateProfileSerializer, PaymentSerializer, ProfileUserSerializer, \
     SubscriptionForCourseSerializer
 from users.services import create_stripe_product, create_stripe_price, create_stripe_session, checkout_stripe_session
 
@@ -42,13 +42,28 @@ class ProfileRetrieveAPIView(generics.RetrieveAPIView):
 class ProfileCreateAPIView(generics.CreateAPIView):
     """Класс представления вида Generic для эндпоинта создания пользователя."""
 
-    serializer_class = ProfileUserSerializer
+    serializer_class = CreateProfileSerializer
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         """Метод вносит изменение в сериализатор создания "Пользователя"."""
 
         user = serializer.save()
+        user.set_password(user.password)
+        user.save()
+
+
+class ProfileAdminCreateAPIView(generics.CreateAPIView):
+    """Класс представления вида Generic для эндпоинта создания с административными правами."""
+
+    serializer_class = ProfileUserSerializer
+    permission_classes = [IsAuthenticated & IsAdministrator]
+
+    def perform_create(self, serializer):
+        """Метод вносит изменение в сериализатор создания "Пользователя" с административными правами."""
+
+        user = serializer.save()
+        user.groups.add('Администратор')
         user.set_password(user.password)
         user.save()
 
