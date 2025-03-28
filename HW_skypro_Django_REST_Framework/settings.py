@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from os import getenv
 from django.core.management import templates
 from dotenv import load_dotenv
 from pathlib import Path
+
 
 load_dotenv(override=True)
 
@@ -44,11 +46,11 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
-    'django_celery_beat',
     'drf_yasg',
     'users',
     'lms',
     'django_filters',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -163,8 +165,14 @@ CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
-CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_TIMEZONE = TIME_ZONE
 
 CELERY_TASK_TRACK_STARTED = True
 
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+CELERY_BEAT_SCHEDULE = {
+    'blocking_inactive_users': {'task': 'users.tasks.blocking_inactive_users', 'schedule': timedelta(days=1)}
+}
