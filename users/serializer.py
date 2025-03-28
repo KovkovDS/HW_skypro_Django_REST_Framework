@@ -55,6 +55,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'avatar', 'phone_number', 'city']
 
 
+class CreateProfileSerializer(serializers.ModelSerializer):
+    """Класс сериализатора для создания пользователя с базовым доступом."""
+
+    class Meta:
+        """Класс для изменения поведения полей сериализатора модели "Пользователь"."""
+
+        model = User
+        fields = ['email', 'avatar', 'phone_number', 'city', 'password']
+
+
 class SubscriptionForCourseSerializer(serializers.ModelSerializer):
     """Класс сериализатора подписки."""
 
