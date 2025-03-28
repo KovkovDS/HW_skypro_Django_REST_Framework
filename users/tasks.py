@@ -1,10 +1,12 @@
 import smtplib
+from datetime import timedelta
 from celery import shared_task
 from django.core.mail import send_mail, BadHeaderError
+from django.utils import timezone
 from django.http import HttpResponse
 from HW_skypro_Django_REST_Framework.settings import EMAIL_HOST_USER
 from lms.models import Course
-from users.models import SubscriptionForCourse
+from users.models import SubscriptionForCourse, User
 
 
 @shared_task
@@ -49,3 +51,30 @@ def send_course_update_for_update_lesson_message(lesson_id):
         return HttpResponse('Обнаружен недопустимый заголовок.')
     except smtplib.SMTPException:
         raise smtplib.SMTPException
+
+
+@shared_task
+def blocking_inactive_users():
+    """Блокирует пользователей неактивных более 30 дней."""
+
+    users = User.objects.filter(is_active=True)
+    today = timezone.now()
+    for user in users:
+        if user.last_login:
+            if today - user.last_login.date() > timedelta(days=30):
+                user.is_active = False
+                user.save()
+    recipient_list = [user.email for user in User.objects.filter(groups='Администратор')]
+    try:
+        send_mail(
+            subject='Отключение не активных пользователей',
+            message=f"Отключены пользователи: {', '.join(users.email)}.",
+            from_email=EMAIL_HOST_USER,
+            recipient_list=recipient_list,
+            fail_silently=True
+        )
+    except BadHeaderError:
+        return HttpResponse('Обнаружен недопустимый заголовок.')
+    except smtplib.SMTPException:
+        raise smtplib.SMTPException
+    print(f"Отключены пользователи: {', '.join(users.email)}.")
