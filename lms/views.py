@@ -1,3 +1,4 @@
+from users.tasks import send_course_update_message
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from lms.models import Course, Lesson
@@ -30,6 +31,13 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_lesson = serializer.save()
         new_lesson.owner = self.request.user
         new_lesson.save()
+
+    def perform_update(self, serializer):
+        """Проверка наличия изменений"""
+
+        course = serializer.save()
+        send_course_update_message.delay(course.pk)
+        course.save()
 
     def get_queryset(self):
         """Метод для изменения запроса к базе данных по объектам модели "Курса"."""
