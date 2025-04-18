@@ -15,7 +15,7 @@ def send_course_update_message(course_id):
 
     course = Course.objects.get(id=course_id)
     subscriptions = SubscriptionForCourse.objects.filter(course=course_id)
-    recipient_list = [subscriptions.owner.email for subscriptions in subscriptions]
+    recipient_list = [subscription.owner.email for subscription in subscriptions]
 
     try:
         send_mail(
@@ -78,3 +78,9 @@ def blocking_inactive_users():
     except smtplib.SMTPException:
         raise smtplib.SMTPException
     print(f"Отключены пользователи: {', '.join(users.email)}.")
+
+
+@shared_task
+def test_task(a, b):
+    result = a + b
+    print(result)
