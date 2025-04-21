@@ -27,6 +27,8 @@ eventlet = "^0.39.1"
 redis = "^5.2.1"
 django-celery-beat = "^2.7.0"
 django-cors-headers = "^4.7.0"
+flake8 = "^7.2.0"
+gunicorn = "^23.0.0"
 
 
 [build-system]
