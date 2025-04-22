@@ -9,7 +9,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         """Класс для изменения поведения полей сериализатора модели "Платеж"."""
 
         model = Payments
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProfileUserSerializer(serializers.ModelSerializer):
@@ -22,10 +22,10 @@ class ProfileUserSerializer(serializers.ModelSerializer):
         """Метод для вывода информации об истории платежей пользователя."""
 
         list_payment_history = [
-            f'{p.created_at}-({p.payment_amount}, способ оплаты: {p.payment_method}),'
+            f"{p.created_at}-({p.payment_amount}, способ оплаты: {p.payment_method}),"
             for p in Payments.objects.filter(owner=obj).order_by("created_at")
         ]
-        payment_history = ', '.join(list_payment_history)
+        payment_history = ", ".join(list_payment_history)
         return payment_history
 
     def get_subscriptions(self, obj):
@@ -35,14 +35,14 @@ class ProfileUserSerializer(serializers.ModelSerializer):
             f'{s.course}-(pk={s.course.pk}{bool(s.created_at < s.course.updated_at) * "Курс обновлен!"}),'
             for s in SubscriptionForCourse.objects.filter(owner=obj).order_by("created_at")
         ]
-        subscriptions = ', '.join(list_subscriptions)
+        subscriptions = ", ".join(list_subscriptions)
         return subscriptions
 
     class Meta:
         """Класс для изменения поведения полей сериализатора модели "Пользователь"."""
 
         model = User
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         """Класс для изменения поведения полей сериализатора модели "Пользователь"."""
 
         model = User
-        fields = ['id', 'email', 'avatar', 'phone_number', 'city']
+        fields = ["id", "email", "avatar", "phone_number", "city"]
 
 
 class CreateProfileSerializer(serializers.ModelSerializer):
@@ -62,7 +62,7 @@ class CreateProfileSerializer(serializers.ModelSerializer):
         """Класс для изменения поведения полей сериализатора модели "Пользователь"."""
 
         model = User
-        fields = ['email', 'avatar', 'phone_number', 'city', 'password']
+        fields = ["email", "avatar", "phone_number", "city", "password"]
 
 
 class SubscriptionForCourseSerializer(serializers.ModelSerializer):
@@ -72,4 +72,4 @@ class SubscriptionForCourseSerializer(serializers.ModelSerializer):
         """Класс для изменения поведения полей сериализатора модели "Подписка"."""
 
         model = SubscriptionForCourse
-        fields = '__all__'
+        fields = "__all__"

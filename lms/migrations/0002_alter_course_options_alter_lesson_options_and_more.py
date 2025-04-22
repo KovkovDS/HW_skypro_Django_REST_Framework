@@ -8,27 +8,43 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lms', '0001_initial'),
+        ("lms", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='course',
-            options={'ordering': ['id', 'owner', 'title'], 'verbose_name': 'Курс', 'verbose_name_plural': 'Курсы'},
+            name="course",
+            options={"ordering": ["id", "owner", "title"], "verbose_name": "Курс", "verbose_name_plural": "Курсы"},
         ),
         migrations.AlterModelOptions(
-            name='lesson',
-            options={'ordering': ['id', 'owner', 'course', 'title'], 'verbose_name': 'Урок', 'verbose_name_plural': 'Уроки'},
+            name="lesson",
+            options={
+                "ordering": ["id", "owner", "course", "title"],
+                "verbose_name": "Урок",
+                "verbose_name_plural": "Уроки",
+            },
         ),
         migrations.AddField(
-            model_name='course',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Владелец'),
+            model_name="course",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Владелец",
+            ),
         ),
         migrations.AddField(
-            model_name='lesson',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Владелец'),
+            model_name="lesson",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Владелец",
+            ),
         ),
     ]

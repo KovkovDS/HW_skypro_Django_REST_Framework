@@ -10,8 +10,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from lms.models import Course
 from users.models import User, Payments, SubscriptionForCourse
 from users.permissions import IsOwner, IsAdministrator, IsUserOwner
-from users.serializer import ProfileSerializer, CreateProfileSerializer, PaymentSerializer, ProfileUserSerializer, \
-    SubscriptionForCourseSerializer
+from users.serializer import (
+    ProfileSerializer,
+    CreateProfileSerializer,
+    PaymentSerializer,
+    ProfileUserSerializer,
+    SubscriptionForCourseSerializer,
+)
 from users.services import create_stripe_product, create_stripe_price, create_stripe_session, checkout_stripe_session
 
 
@@ -31,8 +36,11 @@ class ProfileRetrieveAPIView(generics.RetrieveAPIView):
     def get_serializer_class(self):
         """Метод получения сериализатора в соответствии с запросом."""
 
-        if self.request.method == 'GET' and self.get_object() != self.request.user or \
-                self.request.user.is_superuser is False:
+        if (
+            self.request.method == "GET"
+            and self.get_object() != self.request.user
+            or self.request.user.is_superuser is False
+        ):
             return ProfileSerializer
         if self.request.user.is_superuser:
             return ProfileUserSerializer
@@ -63,7 +71,7 @@ class ProfileAdminCreateAPIView(generics.CreateAPIView):
         """Метод вносит изменение в сериализатор создания "Пользователя" с административными правами."""
 
         user = serializer.save()
-        user.groups.add('Администратор')
+        user.groups.add("Администратор")
         user.set_password(user.password)
         user.save()
 
@@ -89,8 +97,8 @@ class PaymentsListAPIView(generics.ListAPIView):
     serializer_class = PaymentSerializer
     queryset = Payments.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ('paid_course', 'paid_lesson', 'payment_method')
-    ordering_fields = ('create_at',)
+    filterset_fields = ("paid_course", "paid_lesson", "payment_method")
+    ordering_fields = ("create_at",)
     permission_classes = [IsAuthenticated & IsAdministrator]
 
 
@@ -143,27 +151,27 @@ class SubscriptionForCourseView(APIView):
     serializer_class = SubscriptionForCourseSerializer
     permission_classes = [IsAuthenticated & IsAdministrator | IsAuthenticated & IsOwner]
 
-    @swagger_auto_schema(request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        required=['course'],
-        properties={
-            'course': openapi.Schema(type=openapi.TYPE_INTEGER)
-        },
-    ))
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=["course"],
+            properties={"course": openapi.Schema(type=openapi.TYPE_INTEGER)},
+        )
+    )
     def post(self, *args, **kwargs):
         """Метод для отправки запроса на создание или
-            удаление подписки пользователя на курс."""
+        удаление подписки пользователя на курс."""
 
         user = self.request.user
-        course_id = self.request.data.get('course')
+        course_id = self.request.data.get("course")
         course_item = get_object_or_404(Course, pk=course_id)
 
         subs_item = SubscriptionForCourse.objects.all().filter(owner=user, course=course_item)
 
         if subs_item.exists():
             subs_item.delete()
-            message = 'Подписка удалена.'
+            message = "Подписка удалена."
         else:
             SubscriptionForCourse.objects.create(owner=user, course=course_item)
-            message = 'Подписка добавлена.'
+            message = "Подписка добавлена."
         return Response({"message": message})

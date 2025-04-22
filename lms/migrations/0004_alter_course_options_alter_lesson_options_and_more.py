@@ -7,38 +7,50 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lms', '0003_alter_lesson_course'),
+        ("lms", "0003_alter_lesson_course"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='course',
-            options={'ordering': ['id', 'updated_at', 'owner', 'title'], 'verbose_name': 'Курс', 'verbose_name_plural': 'Курсы'},
+            name="course",
+            options={
+                "ordering": ["id", "updated_at", "owner", "title"],
+                "verbose_name": "Курс",
+                "verbose_name_plural": "Курсы",
+            },
         ),
         migrations.AlterModelOptions(
-            name='lesson',
-            options={'ordering': ['id', 'updated_at', 'owner', 'course', 'title'], 'verbose_name': 'Урок', 'verbose_name_plural': 'Уроки'},
+            name="lesson",
+            options={
+                "ordering": ["id", "updated_at", "owner", "course", "title"],
+                "verbose_name": "Урок",
+                "verbose_name_plural": "Уроки",
+            },
         ),
         migrations.AddField(
-            model_name='course',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата создания'),
+            model_name="course",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now, verbose_name="Дата создания"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='course',
-            name='updated_at',
-            field=models.DateTimeField(auto_now=True, verbose_name='Дата изменения'),
+            model_name="course",
+            name="updated_at",
+            field=models.DateTimeField(auto_now=True, verbose_name="Дата изменения"),
         ),
         migrations.AddField(
-            model_name='lesson',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата создания'),
+            model_name="lesson",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now, verbose_name="Дата создания"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='lesson',
-            name='updated_at',
-            field=models.DateTimeField(auto_now=True, verbose_name='Дата изменения'),
+            model_name="lesson",
+            name="updated_at",
+            field=models.DateTimeField(auto_now=True, verbose_name="Дата изменения"),
         ),
     ]

@@ -19,14 +19,14 @@ def send_course_update_message(course_id):
 
     try:
         send_mail(
-            subject='В курсе произошли изменения',
+            subject="В курсе произошли изменения",
             message=f'В курсе "{course.title}" произошли изменения',
             from_email=EMAIL_HOST_USER,
             recipient_list=recipient_list,
-            fail_silently=True
+            fail_silently=True,
         )
     except BadHeaderError:
-        return HttpResponse('Обнаружен недопустимый заголовок.')
+        return HttpResponse("Обнаружен недопустимый заголовок.")
     except smtplib.SMTPException:
         raise smtplib.SMTPException
 
@@ -41,14 +41,14 @@ def send_course_update_for_update_lesson_message(lesson_id):
 
     try:
         send_mail(
-            subject='В курсе произошли изменения',
+            subject="В курсе произошли изменения",
             message=f'В курсе "{course.title}" произошли изменения',
             from_email=EMAIL_HOST_USER,
             recipient_list=recipient_list,
-            fail_silently=True
+            fail_silently=True,
         )
     except BadHeaderError:
-        return HttpResponse('Обнаружен недопустимый заголовок.')
+        return HttpResponse("Обнаружен недопустимый заголовок.")
     except smtplib.SMTPException:
         raise smtplib.SMTPException
 
@@ -64,17 +64,17 @@ def blocking_inactive_users():
             if today - user.last_login.date() > timedelta(days=30):
                 user.is_active = False
                 user.save()
-    recipient_list = [user.email for user in User.objects.filter(groups='Администратор')]
+    recipient_list = [user.email for user in User.objects.filter(groups="Администратор")]
     try:
         send_mail(
-            subject='Отключение не активных пользователей',
+            subject="Отключение не активных пользователей",
             message=f"Отключены пользователи: {', '.join(users.email)}.",
             from_email=EMAIL_HOST_USER,
             recipient_list=recipient_list,
-            fail_silently=True
+            fail_silently=True,
         )
     except BadHeaderError:
-        return HttpResponse('Обнаружен недопустимый заголовок.')
+        return HttpResponse("Обнаружен недопустимый заголовок.")
     except smtplib.SMTPException:
         raise smtplib.SMTPException
     print(f"Отключены пользователи: {', '.join(users.email)}.")

@@ -13,11 +13,17 @@ class TestCase(APITestCase):
         """Задает начальные данные для тестов."""
 
         self.user = User.objects.create(email="admin@sky.pro")
-        link_to_video = 'https://www.youtube.com/'
-        self.course = Course.objects.create(title="Test Course for tests", description='Test Course for tests',
-                                            owner=self.user)
-        self.lesson = Lesson.objects.create(title="Test Lesson for tests", description='Test Lesson for tests',
-                                            course=self.course, link_to_video=link_to_video, owner=self.user)
+        link_to_video = "https://www.youtube.com/"
+        self.course = Course.objects.create(
+            title="Test Course for tests", description="Test Course for tests", owner=self.user
+        )
+        self.lesson = Lesson.objects.create(
+            title="Test Lesson for tests",
+            description="Test Lesson for tests",
+            course=self.course,
+            link_to_video=link_to_video,
+            owner=self.user,
+        )
         self.client.force_authenticate(user=self.user)
 
 
@@ -34,41 +40,38 @@ class CourseTestCase(TestCase, APITestCase):
         data = response.json()
 
         result = {
-            'count': 1,
-            'next': None,
-            'previous': None,
-            'results':
-                [
-                    {
-                        'id': self.course.pk,
-                        'count_lessons': 1,
-                        'lesson_information':
-                            [
-                                {
-                                    'id': self.lesson.pk,
-                                    'title': self.lesson.title,
-                                    'description': self.lesson.description,
-                                    'preview': None,
-                                    'link_to_video': self.lesson.link_to_video,
-                                    "created_at": res_created_at(self.lesson.created_at),
-                                    'updated_at': res_updated_at(self.lesson.updated_at),
-                                    'course': self.course.pk,
-                                    'owner': self.user.pk,
-                                }
-                            ],
-
-                        'subscription': False,
-                        'count_subscriptions': 'Подписок - 0.',
-                        'title': self.course.title,
-                        'preview': None,
-                        'description': self.course.description,
-                        'owner': self.user.pk,
-                        "created_at": res_created_at(self.course.created_at),
-                        'updated_at': res_updated_at(self.course.updated_at),
-                    }
-                ]
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "results": [
+                {
+                    "id": self.course.pk,
+                    "count_lessons": 1,
+                    "lesson_information": [
+                        {
+                            "id": self.lesson.pk,
+                            "title": self.lesson.title,
+                            "description": self.lesson.description,
+                            "preview": None,
+                            "link_to_video": self.lesson.link_to_video,
+                            "created_at": res_created_at(self.lesson.created_at),
+                            "updated_at": res_updated_at(self.lesson.updated_at),
+                            "course": self.course.pk,
+                            "owner": self.user.pk,
+                        }
+                    ],
+                    "subscription": False,
+                    "count_subscriptions": "Подписок - 0.",
+                    "title": self.course.title,
+                    "preview": None,
+                    "description": self.course.description,
+                    "owner": self.user.pk,
+                    "created_at": res_created_at(self.course.created_at),
+                    "updated_at": res_updated_at(self.course.updated_at),
+                }
+            ],
         }
-#
+        #
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data, result)
 
@@ -86,8 +89,7 @@ class CourseTestCase(TestCase, APITestCase):
         """Тест создания нового курса."""
 
         url = reverse("lms:courses-list")
-        data = {"title": "Test Course for tests 2", "description": "Test Course for tests 2",
-                "owner": self.user.pk}
+        data = {"title": "Test Course for tests 2", "description": "Test Course for tests 2", "owner": self.user.pk}
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Course.objects.filter(title="Test Course for tests 2").count(), 1)
@@ -97,8 +99,10 @@ class CourseTestCase(TestCase, APITestCase):
         """Тест изменения курса по Primary Key."""
 
         url = reverse("lms:courses-detail", args=(self.course.pk,))
-        data = {"title": "Updated Test Course for tests",
-                "description": "Updated Test Course for tests",}
+        data = {
+            "title": "Updated Test Course for tests",
+            "description": "Updated Test Course for tests",
+        }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Course.objects.get(pk=self.course.pk).title, "Updated Test Course for tests")
@@ -136,11 +140,11 @@ class LessonTestCase(TestCase, APITestCase):
                     "preview": None,
                     "link_to_video": self.lesson.link_to_video,
                     "created_at": res_created_at(self.lesson.created_at),
-                    'updated_at': res_updated_at(self.lesson.updated_at),
+                    "updated_at": res_updated_at(self.lesson.updated_at),
                     "course": self.course.pk,
                     "owner": self.user.pk,
                 }
-            ]
+            ],
         }
         self.assertEqual(data, result)
 
@@ -156,8 +160,13 @@ class LessonTestCase(TestCase, APITestCase):
         """Тест создания нового урока."""
 
         url = reverse("lms:adding_lesson")
-        data = {"title": "Test Lesson for tests 2", "description": "Test Lesson for tests 2",
-                "link_to_video": 'https://www.youtube.com/lesson_1', "course": self.course.pk, "owner": self.user.pk}
+        data = {
+            "title": "Test Lesson for tests 2",
+            "description": "Test Lesson for tests 2",
+            "link_to_video": "https://www.youtube.com/lesson_1",
+            "course": self.course.pk,
+            "owner": self.user.pk,
+        }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Lesson.objects.filter(description="Test Lesson for tests 2").count(), 1)
@@ -167,8 +176,13 @@ class LessonTestCase(TestCase, APITestCase):
         """Тест изменения урока по Primary Key."""
 
         url = reverse("lms:update_lesson", args=(self.lesson.pk,))
-        data = {"title": "Updated Test Lesson for tests", "description": "Updated Test Lesson for tests 2",
-                "link_to_video": 'https://www.youtube.com/lesson_1', "course": self.course.pk, "owner": self.user.pk}
+        data = {
+            "title": "Updated Test Lesson for tests",
+            "description": "Updated Test Lesson for tests 2",
+            "link_to_video": "https://www.youtube.com/lesson_1",
+            "course": self.course.pk,
+            "owner": self.user.pk,
+        }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Lesson.objects.get(pk=self.lesson.pk).description, "Updated Test Lesson for tests 2")

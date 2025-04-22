@@ -12,20 +12,20 @@ def create_stripe_product(payment):
     for product in stripe_products_list:
         if payment.paid_course.title != product.name and payment.paid_lesson is None:
             paid_product = payment.paid_course.title
-            stripe_product = stripe.Product.create(name=f'{paid_product}')
+            stripe_product = stripe.Product.create(name=f"{paid_product}")
         elif payment.paid_lesson.title != product.name and payment.paid_lesson.title is not None:
             paid_product = payment.paid_lesson.title
-            stripe_product = stripe.Product.create(name=f'{paid_product}')
+            stripe_product = stripe.Product.create(name=f"{paid_product}")
         else:
             stripe_product = product
-        return stripe_product['id']
+        return stripe_product["id"]
 
 
 def create_stripe_price(payment, stripe_product_id):
     """Функция создания цены в Stripe."""
 
     return stripe.Price.create(
-        currency='rub',
+        currency="rub",
         unit_amount=int(payment.payment_amount * 100),
         product=stripe_product_id,
     )
@@ -46,5 +46,5 @@ def checkout_stripe_session(session_id):
     """Функция проверки статуса сессии платежа в Stripe."""
 
     checkout_session_id = stripe.checkout.Session.retrieve(session_id)
-    if session_id in checkout_session_id.get('url'):
+    if session_id in checkout_session_id.get("url"):
         return True

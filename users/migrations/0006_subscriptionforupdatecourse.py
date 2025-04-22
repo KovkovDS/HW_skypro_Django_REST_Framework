@@ -8,23 +8,39 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lms', '0003_alter_lesson_course'),
-        ('users', '0005_alter_payments_payment_amount_and_more'),
+        ("lms", "0003_alter_lesson_course"),
+        ("users", "0005_alter_payments_payment_amount_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SubscriptionForUpdateCourse',
+            name="SubscriptionForUpdateCourse",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_at', models.DateField(auto_now_add=True, verbose_name='Дата начала подписки')),
-                ('course', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='lms.course', verbose_name='Подписка на курс')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("create_at", models.DateField(auto_now_add=True, verbose_name="Дата начала подписки")),
+                (
+                    "course",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="lms.course",
+                        verbose_name="Подписка на курс",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Пользователь",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Подписка',
-                'verbose_name_plural': 'Подписки',
-                'ordering': ['create_at', 'user', 'course'],
+                "verbose_name": "Подписка",
+                "verbose_name_plural": "Подписки",
+                "ordering": ["create_at", "user", "course"],
             },
         ),
     ]

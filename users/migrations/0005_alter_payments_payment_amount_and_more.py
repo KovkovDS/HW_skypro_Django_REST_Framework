@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0004_alter_payments_payment_amount'),
+        ("users", "0004_alter_payments_payment_amount"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='payments',
-            name='payment_amount',
-            field=models.DecimalField(decimal_places=2, max_digits=9, verbose_name='Сумма оплаты'),
+            model_name="payments",
+            name="payment_amount",
+            field=models.DecimalField(decimal_places=2, max_digits=9, verbose_name="Сумма оплаты"),
         ),
         migrations.AlterField(
-            model_name='payments',
-            name='payment_method',
-            field=models.CharField(choices=[('CASH', 'Наличные'), ('TRANSFER', 'Перевод на счет')], max_length=50, verbose_name='Способ оплаты'),
+            model_name="payments",
+            name="payment_method",
+            field=models.CharField(
+                choices=[("CASH", "Наличные"), ("TRANSFER", "Перевод на счет")],
+                max_length=50,
+                verbose_name="Способ оплаты",
+            ),
         ),
     ]
