@@ -46,7 +46,7 @@ jobs:
           cd ${{ secrets.DEPLOY_DIR }}
           poetry env activate 
           poetry install --no-root
-          cwd
+          pwd
 
       - name: Set environment variables
         run: echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
