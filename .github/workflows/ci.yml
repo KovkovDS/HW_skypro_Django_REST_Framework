@@ -49,7 +49,9 @@ jobs:
           pwd
 
       - name: Set environment variables
-        run: echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          cat .env
 
       - name: Run tests
         run: python manage.py test
