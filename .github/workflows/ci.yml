@@ -44,9 +44,9 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           cd ${{ secrets.DEPLOY_DIR }}
-          pwd
           poetry env activate 
           poetry install --no-root
+          cwd
 
       - name: Set environment variables
         run: echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
