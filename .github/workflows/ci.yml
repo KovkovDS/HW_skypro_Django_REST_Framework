@@ -44,7 +44,8 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           cd ${{ secrets.DEPLOY_DIR }}
-          poetry install
+          poetry env activate 
+          poetry install --no-root
 
       - name: Set environment variables
         run: echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
@@ -88,6 +89,8 @@ jobs:
 
       - name: Deploy to server
         run: |
+          cd ${{ secrets.DEPLOY_DIR }}
+          echo "${{ secrets.ENV_FILE }}" >> $GITHUB_ENV
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
           docker stop hw_drf || true
