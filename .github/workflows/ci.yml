@@ -54,7 +54,7 @@ jobs:
           cat .env
 
       - name: Run tests
-        run: python manage.py test
+        run: poetry run python manage.py test
 
   build:
     needs: test
