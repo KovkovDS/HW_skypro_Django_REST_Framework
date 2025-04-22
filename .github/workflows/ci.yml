@@ -94,6 +94,7 @@ jobs:
         run: |
           cd ${{ secrets.DEPLOY_DIR }}
           echo "${{ secrets.ENV_FILE }}" >> .env
+          cat .env
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
           docker stop hw_drf || true
