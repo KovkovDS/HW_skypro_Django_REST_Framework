@@ -96,7 +96,7 @@ jobs:
           cd ${{ secrets.DEPLOY_DIR }}
           echo "${{ secrets.ENV_FILE }}" >> .env
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
-          docker stop hw_drf-1 || true
-          docker rm hw_drf-1 || true
+          docker stop /hw_drf || true
+          docker rm /hw_drf || true
           docker run -d --name hw_drf -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
           EOF
