@@ -92,8 +92,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
-          docker stop $(docker ps -a -q)
-          docker rm $(docker ps -qa)
-          docker-compose up --build
+          docker stop hw_drf
+          docker rm hw_drf
+          docker-compose up --build hw_drf
           EOF
 
