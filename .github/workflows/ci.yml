@@ -91,9 +91,10 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd ${{ secrets.DEPLOY_DIR }}
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
-          docker stop hw_drf
-          docker rm hw_drf
-          docker-compose up --build hw_drf
+          docker stop $(docker ps -a -q) || true
+          docker rm $(docker ps -qa) || true
+          docker-compose up --build
           EOF
 
