@@ -92,6 +92,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd ${{ secrets.DEPLOY_DIR }}
+          echo "${{ secrets.ENV_FILE }}" >> .env
+          ls
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
           docker stop $(docker ps -a -q) || true
           docker rm $(docker ps -qa) || true
