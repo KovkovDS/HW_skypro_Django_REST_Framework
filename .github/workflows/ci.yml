@@ -98,5 +98,6 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
           docker stop /hw_drf || true
           docker rm /hw_drf || true
+          cd ${{ secrets.DEPLOY_DIR }}
           docker-compose up --build hw_drf
           EOF
