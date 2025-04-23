@@ -18,7 +18,6 @@ jobs:
     - name: Install dependencies
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
-        cd ${{ secrets.DEPLOY_DIR }}
         poetry env activate 
         poetry install --no-root
         
