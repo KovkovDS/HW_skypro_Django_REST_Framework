@@ -29,10 +29,10 @@ ENV DATABASE_URL=os.getenv('DATABASE_URL')
 ENV DEBUG=os.getenv('DATABASE_URL')
 
 # Создаем директорию для медиафайлов
-RUN mkdir -p /app/static && chmod -R 755 /app/static
+RUN mkdir -p /app/staticfiles && chmod -R 755 /app/staticfiles
 RUN mkdir -p /app/media && chmod -R 755 /app/media
-RUN mkdir -p /app/data
-RUN mkdir -p /app/data/htmlcov && chmod -R 755 /app/htmlcov
+RUN mkdir -p /app/data && chmod -R 755 /app/data
+RUN mkdir -p /app/data/htmlcov && chmod -R 755 /app/data/htmlcov
 
 # Пробрасываем порт, который будет использовать Django
 EXPOSE 8000
