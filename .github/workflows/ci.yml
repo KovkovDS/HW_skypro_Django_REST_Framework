@@ -100,3 +100,4 @@ jobs:
           docker rm $(docker ps -qa)
           docker-compose up --build
           EOF
+
