@@ -16,13 +16,24 @@ class TestCase(APITestCase):
         self.user = User.objects.create(email="admin@sky.pro")
         self.administrator_group = Group.objects.create(name="Администратор")
         self.user.groups.add(self.administrator_group)
-        link_to_video = 'https://www.youtube.com/'
-        self.course = Course.objects.create(title="Test Course for tests", description='Test Course for tests',
-                                            owner=self.user)
-        self.lesson = Lesson.objects.create(title="Test Lesson for tests", description='Test Lesson for tests',
-                                            course=self.course, link_to_video=link_to_video, owner=self.user)
-        self.payment = Payments.objects.create(owner=self.user, paid_course=self.course, paid_lesson=self.lesson,
-                                               payment_amount=25000.00, payment_method='CASH')
+        link_to_video = "https://www.youtube.com/"
+        self.course = Course.objects.create(
+            title="Test Course for tests", description="Test Course for tests", owner=self.user
+        )
+        self.lesson = Lesson.objects.create(
+            title="Test Lesson for tests",
+            description="Test Lesson for tests",
+            course=self.course,
+            link_to_video=link_to_video,
+            owner=self.user,
+        )
+        self.payment = Payments.objects.create(
+            owner=self.user,
+            paid_course=self.course,
+            paid_lesson=self.lesson,
+            payment_amount=25000.00,
+            payment_method="CASH",
+        )
         self.client.force_authenticate(user=self.user)
 
 
@@ -36,7 +47,7 @@ class SubscriptionForCourseViewTestCase(TestCase, APITestCase):
         data = {"owner": self.user.pk, "course": self.course.pk}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), {'message': 'Подписка добавлена.'})
+        self.assertEqual(response.json(), {"message": "Подписка добавлена."})
 
     def test_subscription_delete(self):
         """Тест на удаление подписки на курс."""
@@ -46,7 +57,7 @@ class SubscriptionForCourseViewTestCase(TestCase, APITestCase):
         url = reverse("users:subscription")
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), {'message': 'Подписка удалена.'})
+        self.assertEqual(response.json(), {"message": "Подписка удалена."})
 
 
 class ProfileTestCase(TestCase, APITestCase):
@@ -92,8 +103,12 @@ class ProfileTestCase(TestCase, APITestCase):
         """Тест изменения пользователя по Primary Key."""
 
         url = reverse("users:update_profile", args=(self.user.pk,))
-        data = {"email": "updated_test_user__for_test@sky.pro", "password": "test_user123456",
-                "phone_number": "79865432112", "city": 'Volgograd'}
+        data = {
+            "email": "updated_test_user__for_test@sky.pro",
+            "password": "test_user123456",
+            "phone_number": "79865432112",
+            "city": "Volgograd",
+        }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(User.objects.get(pk=self.user.pk).city, "Volgograd")
@@ -114,7 +129,10 @@ class PaymentsTestCase(TestCase, APITestCase):
         """Тест на получение списка платежей."""
 
         res_created_at = DateTimeField().to_representation
-        res_payment_amount = DecimalField(decimal_places=2, max_digits=9,).to_representation
+        res_payment_amount = DecimalField(
+            decimal_places=2,
+            max_digits=9,
+        ).to_representation
         url = reverse("users:payments")
         response = self.client.get(url)
         data = response.json()
@@ -125,8 +143,8 @@ class PaymentsTestCase(TestCase, APITestCase):
                 "created_at": res_created_at(self.payment.created_at),
                 "payment_amount": res_payment_amount(self.payment.payment_amount),
                 "payment_method": self.payment.payment_method,
-                'session_id': None,
-                'payment_link': None,
+                "session_id": None,
+                "payment_link": None,
                 "owner": self.user.pk,
                 "paid_course": self.course.pk,
                 "paid_lesson": self.lesson.pk,
@@ -146,8 +164,13 @@ class PaymentsTestCase(TestCase, APITestCase):
         """Тест создания новой оплаты."""
 
         url = reverse("users:adding_payment")
-        data = {"owner": self.user.pk, "payment_amount": 35000.00, "payment_method": "TRANSFER",
-                "paid_course": self.course.pk, "paid_lesson": self.lesson.pk}
+        data = {
+            "owner": self.user.pk,
+            "payment_amount": 35000.00,
+            "payment_method": "TRANSFER",
+            "paid_course": self.course.pk,
+            "paid_lesson": self.lesson.pk,
+        }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Payments.objects.filter(payment_amount=35000.00).count(), 1)
@@ -157,8 +180,13 @@ class PaymentsTestCase(TestCase, APITestCase):
         """Тест изменения платежа по Primary Key."""
 
         url = reverse("users:update_payment", args=(self.payment.pk,))
-        data = {"owner": self.user.pk, "payment_amount": 30000.00, "payment_method": "CASH", "paid_course": self.course.pk,
-                "paid_lesson": self.lesson.pk}
+        data = {
+            "owner": self.user.pk,
+            "payment_amount": 30000.00,
+            "payment_method": "CASH",
+            "paid_course": self.course.pk,
+            "paid_lesson": self.lesson.pk,
+        }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Payments.objects.get(pk=self.payment.pk).payment_amount, 30000.00)

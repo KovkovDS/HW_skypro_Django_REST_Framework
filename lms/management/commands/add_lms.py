@@ -4,11 +4,11 @@ from lms.models import Course, Lesson
 
 
 class Command(BaseCommand):
-    help = 'Load test data from fixture'
+    help = "Load test data from fixture"
 
     def handle(self, *args, **kwargs):
         Course.objects.all().delete()
         Lesson.objects.all().delete()
 
-        call_command('loaddata', 'lms/fixtures/courses_and_lessons_fixture.json')
-        self.stdout.write(self.style.SUCCESS('Successfully loaded data from fixture'))
+        call_command("loaddata", "lms/fixtures/courses_and_lessons_fixture.json")
+        self.stdout.write(self.style.SUCCESS("Successfully loaded data from fixture"))

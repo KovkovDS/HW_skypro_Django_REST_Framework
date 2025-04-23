@@ -8,26 +8,58 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lms', '0001_initial'),
-        ('users', '0002_alter_user_options'),
+        ("lms", "0001_initial"),
+        ("users", "0002_alter_user_options"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Payments',
+            name="Payments",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_at', models.DateField(auto_now_add=True, verbose_name='Дата оплаты')),
-                ('payment_amount', models.IntegerField(verbose_name='Сумма оплаты')),
-                ('payment_method', models.CharField(choices=[('Наличные', 'CASH'), ('Перевод на счет', 'TRANSFER')], max_length=50, verbose_name='Способ оплаты')),
-                ('paid_course', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='lms.course', verbose_name='Оплаченный курс')),
-                ('paid_lesson', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='lms.lesson', verbose_name='Оплаченный урок')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("create_at", models.DateField(auto_now_add=True, verbose_name="Дата оплаты")),
+                ("payment_amount", models.IntegerField(verbose_name="Сумма оплаты")),
+                (
+                    "payment_method",
+                    models.CharField(
+                        choices=[("Наличные", "CASH"), ("Перевод на счет", "TRANSFER")],
+                        max_length=50,
+                        verbose_name="Способ оплаты",
+                    ),
+                ),
+                (
+                    "paid_course",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="lms.course",
+                        verbose_name="Оплаченный курс",
+                    ),
+                ),
+                (
+                    "paid_lesson",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="lms.lesson",
+                        verbose_name="Оплаченный урок",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Пользователь",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Платеж',
-                'verbose_name_plural': 'Платежи',
-                'ordering': ['create_at', 'user', 'payment_amount', 'paid_course', 'paid_lesson', 'payment_method'],
+                "verbose_name": "Платеж",
+                "verbose_name_plural": "Платежи",
+                "ordering": ["create_at", "user", "payment_amount", "paid_course", "paid_lesson", "payment_method"],
             },
         ),
     ]

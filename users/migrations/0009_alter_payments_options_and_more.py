@@ -6,26 +6,34 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0008_alter_payments_options_and_more'),
+        ("users", "0008_alter_payments_options_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='payments',
-            options={'ordering': ['created_at', 'owner', 'payment_amount', 'paid_course', 'paid_lesson', 'payment_method'], 'verbose_name': 'Платеж', 'verbose_name_plural': 'Платежи'},
+            name="payments",
+            options={
+                "ordering": ["created_at", "owner", "payment_amount", "paid_course", "paid_lesson", "payment_method"],
+                "verbose_name": "Платеж",
+                "verbose_name_plural": "Платежи",
+            },
         ),
         migrations.AlterModelOptions(
-            name='subscriptionforcourse',
-            options={'ordering': ['created_at', 'owner', 'course'], 'verbose_name': 'Подписка', 'verbose_name_plural': 'Подписки'},
+            name="subscriptionforcourse",
+            options={
+                "ordering": ["created_at", "owner", "course"],
+                "verbose_name": "Подписка",
+                "verbose_name_plural": "Подписки",
+            },
         ),
         migrations.RenameField(
-            model_name='payments',
-            old_name='user',
-            new_name='owner',
+            model_name="payments",
+            old_name="user",
+            new_name="owner",
         ),
         migrations.RenameField(
-            model_name='subscriptionforcourse',
-            old_name='user',
-            new_name='owner',
+            model_name="subscriptionforcourse",
+            old_name="user",
+            new_name="owner",
         ),
     ]

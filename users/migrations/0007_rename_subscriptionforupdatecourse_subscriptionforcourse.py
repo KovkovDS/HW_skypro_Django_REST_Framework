@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lms', '0003_alter_lesson_course'),
-        ('users', '0006_subscriptionforupdatecourse'),
+        ("lms", "0003_alter_lesson_course"),
+        ("users", "0006_subscriptionforupdatecourse"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='SubscriptionForUpdateCourse',
-            new_name='SubscriptionForCourse',
+            old_name="SubscriptionForUpdateCourse",
+            new_name="SubscriptionForCourse",
         ),
     ]

@@ -7,36 +7,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0007_rename_subscriptionforupdatecourse_subscriptionforcourse'),
+        ("users", "0007_rename_subscriptionforupdatecourse_subscriptionforcourse"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='payments',
-            options={'ordering': ['created_at', 'user', 'payment_amount', 'paid_course', 'paid_lesson', 'payment_method'], 'verbose_name': 'Платеж', 'verbose_name_plural': 'Платежи'},
+            name="payments",
+            options={
+                "ordering": ["created_at", "user", "payment_amount", "paid_course", "paid_lesson", "payment_method"],
+                "verbose_name": "Платеж",
+                "verbose_name_plural": "Платежи",
+            },
         ),
         migrations.AlterModelOptions(
-            name='subscriptionforcourse',
-            options={'ordering': ['created_at', 'user', 'course'], 'verbose_name': 'Подписка', 'verbose_name_plural': 'Подписки'},
+            name="subscriptionforcourse",
+            options={
+                "ordering": ["created_at", "user", "course"],
+                "verbose_name": "Подписка",
+                "verbose_name_plural": "Подписки",
+            },
         ),
         migrations.RemoveField(
-            model_name='payments',
-            name='create_at',
+            model_name="payments",
+            name="create_at",
         ),
         migrations.RemoveField(
-            model_name='subscriptionforcourse',
-            name='create_at',
+            model_name="subscriptionforcourse",
+            name="create_at",
         ),
         migrations.AddField(
-            model_name='payments',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата оплаты'),
+            model_name="payments",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now, verbose_name="Дата оплаты"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='subscriptionforcourse',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='Дата начала подписки'),
+            model_name="subscriptionforcourse",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now, verbose_name="Дата начала подписки"
+            ),
             preserve_default=False,
         ),
     ]

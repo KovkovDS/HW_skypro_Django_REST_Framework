@@ -1,6 +1,6 @@
 from datetime import timedelta
 from django.utils import timezone
-from users.tasks import send_course_update_message, send_course_update_for_update_lesson_message
+from users.tasks import send_course_update_message
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from lms.models import Course, Lesson
@@ -19,11 +19,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """Метод получения разрешений на доступ к эндпоитам в соответствии с запросом."""
 
-        if self.action in ['create']:
+        if self.action in ["create"]:
             self.permission_classes = [IsAuthenticated & ~IsModerator]
-        elif self.action in ['list', 'change', 'retrieve']:
+        elif self.action in ["list", "change", "retrieve"]:
             self.permission_classes = [IsAuthenticated & IsOwner | IsAuthenticated & IsModerator]
-        elif self.action in ['destroy']:
+        elif self.action in ["destroy"]:
             self.permission_classes = [IsAuthenticated & IsOwner]
         return [permission() for permission in self.permission_classes]
 
