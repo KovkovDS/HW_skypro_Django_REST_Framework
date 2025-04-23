@@ -68,7 +68,10 @@ jobs:
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }} .
+        run: |
+          cd ${{ secrets.DEPLOY_DIR }}
+          echo "${{ secrets.ENV_FILE }}" >> .env
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }} .
 
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
