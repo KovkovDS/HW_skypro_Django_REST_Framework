@@ -85,7 +85,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          chmod 755 ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy to server
@@ -95,8 +95,7 @@ jobs:
           git checkout HW_lesson_35_2_task2
           git pull
           sudo echo "${{ secrets.ENV_FILE }}" >> .env
-          ls
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
+          ls -la
           docker stop $(docker ps -a -q) || true
           docker rm $(docker ps -qa) || true
           docker-compose up --build
