@@ -96,8 +96,7 @@ jobs:
           cd ${{ secrets.DEPLOY_DIR }}
           echo "${{ secrets.ENV_FILE }}" >> .env
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/hw_drf:${{ github.sha }}
-          docker stop /hw_drf || true
-          docker rm /hw_drf || true
-          cd ${{ secrets.DEPLOY_DIR }}
-          docker-compose up --build hw_drf || true
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps -qa)
+          docker-compose up --build
           EOF
